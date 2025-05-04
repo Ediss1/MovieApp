@@ -60,7 +60,7 @@ public class SliderAdapters extends RecyclerView.Adapter<SliderAdapters.SliderVi
             imageView=itemView.findViewById(R.id.imageSlide);
         }
 
-        void getImage (SliderItems sliderItems){
+        void setImage (SliderItems sliderItems){
             RequestOptions requestOptions = new RequestOptions();
             requestOptions=requestOptions.transforms(new CenterCrop(), new RoundedCorners(60));
 
@@ -69,6 +69,7 @@ public class SliderAdapters extends RecyclerView.Adapter<SliderAdapters.SliderVi
                     .apply(requestOptions)
                     .into(imageView);
         }
+
 
 
     }

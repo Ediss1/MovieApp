@@ -1,7 +1,6 @@
 package com.example.movieapp.ui.adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,50 +16,54 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.movieapp.R;
 import com.example.movieapp.data.model.ListFilm;
-import com.example.movieapp.ui.fragments.MovieDetailsFragment;
+
 
 public class FilmListAdapter extends RecyclerView.Adapter<FilmListAdapter.ViewHolder> {
-    ListFilm items;
-    Context context;
 
-    public FilmListAdapter(ListFilm items) {
+    public interface OnMovieClickListener {
+        void onMovieClick(int movieId);
+    }
+
+    private final ListFilm items;
+    private final OnMovieClickListener listener;
+    private Context context;
+
+    public FilmListAdapter(ListFilm items, OnMovieClickListener listener) {
         this.items = items;
+        this.listener = listener;
     }
 
     @NonNull
     @Override
-    public FilmListAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         context = parent.getContext();
-        View inflate = LayoutInflater.from(parent.getContext()).inflate(R.layout.viewholder_film, parent, false);
+        View inflate = LayoutInflater.from(context).inflate(R.layout.viewholder_film, parent, false);
         return new ViewHolder(inflate);
     }
 
+
     @Override
-    public void onBindViewHolder(@NonNull FilmListAdapter.ViewHolder holder, int position) {
-        holder.titleText.setText(items.getData().get(position).getTitle());
-        RequestOptions requestOptions = new RequestOptions();
-        requestOptions = requestOptions.transform(new CenterCrop(), new RoundedCorners(30));
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        holder.titleText.setText(items.getResults().get(position).getTitle());
 
         Glide.with(context)
-                .load(items.getData().get(position).getPoster())
-                .apply(requestOptions)
+                .load(items.getResults().get(position).getFullPosterUrl())
+                .apply(new RequestOptions().transform(new CenterCrop(), new RoundedCorners(30)))
                 .into(holder.pic);
 
-        holder.itemView.setOnClickListener(view -> {
-            Intent intent = new Intent(holder.itemView.getContext(), MovieDetailsFragment.class);
-            intent.putExtra("id", items.getData().get(position).getId());
-            context.startActivity(intent);
-        });
+        holder.itemView.setOnClickListener(view ->
+                listener.onMovieClick(items.getResults().get(position).getId()));
     }
 
     @Override
     public int getItemCount() {
-        return items.getData().size();
+        return items.getResults().size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView titleText;
         ImageView pic;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             titleText = itemView.findViewById(R.id.titleTxt);

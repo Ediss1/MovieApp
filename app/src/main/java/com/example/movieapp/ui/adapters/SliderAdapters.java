@@ -43,7 +43,7 @@ public class SliderAdapters extends RecyclerView.Adapter<SliderAdapters.SliderVi
     public void onBindViewHolder(@NonNull SliderAdapters.SliderViewHolder holder, int position) {
 
         holder.setImage(sliderItems.get(position));
-        if (position ==sliderItems.size()-2){
+        if (position == sliderItems.size() - 2) {
             viewPager2.post(runnable);
         }
     }
@@ -55,21 +55,21 @@ public class SliderAdapters extends RecyclerView.Adapter<SliderAdapters.SliderVi
 
     public class SliderViewHolder extends RecyclerView.ViewHolder {
         private ImageView imageView;
+
         public SliderViewHolder(@NonNull View itemView) {
             super(itemView);
-            imageView=itemView.findViewById(R.id.imageSlide);
+            imageView = itemView.findViewById(R.id.imageSlide);
         }
 
-        void setImage (SliderItems sliderItems){
+        void setImage(SliderItems sliderItems) {
             RequestOptions requestOptions = new RequestOptions();
-            requestOptions=requestOptions.transforms(new CenterCrop(), new RoundedCorners(60));
+            requestOptions = requestOptions.transforms(new CenterCrop(), new RoundedCorners(60));
 
             Glide.with(context)
                     .load(sliderItems.getImage())
                     .apply(requestOptions)
                     .into(imageView);
         }
-
 
 
     }

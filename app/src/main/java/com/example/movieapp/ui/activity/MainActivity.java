@@ -22,6 +22,9 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String API_KEY = "7927ac1d504e1ffef0950f83ebc572b7";
+    private static final String BASE_URL = "https://api.themoviedb.org/3/";
+
     @Override
     protected void onStart() {
         super.onStart();

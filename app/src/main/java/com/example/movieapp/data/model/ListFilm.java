@@ -6,28 +6,14 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class ListFilm {
+    private int page;
+    private List<Film> results;
+    private int total_pages;
+    private int total_results;
 
-    @SerializedName("data")
-    @Expose
-    private List<Datum> data;
-    @SerializedName("metadata")
-    @Expose
-    private Metadata metadata;
-
-    public List<Datum> getData() {
-        return data;
-    }
-
-    public void setData(List<Datum> data) {
-        this.data = data;
-    }
-
-    public Metadata getMetadata() {
-        return metadata;
-    }
-
-    public void setMetadata(Metadata metadata) {
-        this.metadata = metadata;
-    }
-
+    public int getPage() { return page; }
+    public List<Film> getResults() { return results; }
+    public int getTotalPages() { return total_pages; }
+    public int getTotalResults() { return total_results; }
 }
+

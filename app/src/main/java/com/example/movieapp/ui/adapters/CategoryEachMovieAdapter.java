@@ -10,9 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.movieapp.R;
-import com.example.movieapp.data.model.GenresItem;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class CategoryEachMovieAdapter extends RecyclerView.Adapter<CategoryEachMovieAdapter.ViewHolder> {

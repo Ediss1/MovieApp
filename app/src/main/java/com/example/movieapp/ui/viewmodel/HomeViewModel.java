@@ -1,100 +1,138 @@
 package com.example.movieapp.ui.viewmodel;
 
 import android.app.Application;
-import android.net.Uri;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.movieapp.R;
-import com.example.movieapp.data.model.GenresItem;
-import com.example.movieapp.data.model.ListFilm;
+import com.example.movieapp.data.model.ListMovie;
+import com.example.movieapp.data.model.MovieItem;
 import com.example.movieapp.data.model.SliderItems;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import com.example.movieapp.data.repository.MovieRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+
 public class HomeViewModel extends AndroidViewModel {
-    private static final String BASE_URL = "https://api.themoviedb.org/3/";
-    private static final String API_KEY = "7927ac1d504e1ffef0950f83ebc572b7";
 
     private final MutableLiveData<List<SliderItems>> sliderItemsLiveData = new MutableLiveData<>();
-    private final MutableLiveData<ListFilm> bestMoviesLiveData = new MutableLiveData<>();
-    private final MutableLiveData<ListFilm> upcomingMoviesLiveData = new MutableLiveData<>();
-    private final MutableLiveData<List<GenresItem>> categoryLiveData = new MutableLiveData<>();
-    private final MutableLiveData<ListFilm> searchResultsLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> isLoadingBestMovies = new MutableLiveData<>();
+    private final MutableLiveData<List<MovieItem>> bestMovies = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> isLoadingTopRatedMovies = new MutableLiveData<>();
+    private final MutableLiveData<List<MovieItem>> topRatedMovies = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> isLoadingUpcomingMovies = new MutableLiveData<>();
+    private final MutableLiveData<List<MovieItem>> upComingMovies = new MutableLiveData<>();
 
+    private final MovieRepository movieRepository;
 
-    private final RequestQueue requestQueue;
-
-    public HomeViewModel(@NonNull Application application) {
+    public HomeViewModel(@NonNull Application application, MovieRepository movieRepository) {
         super(application);
-        requestQueue = Volley.newRequestQueue(application);
+        this.movieRepository = movieRepository;
+
+        loadSliderItems();
+        loadTopRatedMovies();
+        loadBestMovies();
+        loadUpComingMovies();
     }
 
     public LiveData<List<SliderItems>> getSliderItems() {
+        return sliderItemsLiveData;
+    }
+
+    public LiveData<Boolean> getIsLoadingBestMovies() {
+        return isLoadingBestMovies;
+    }
+
+    public LiveData<List<MovieItem>> getBestMovies() {
+        return bestMovies;
+    }
+
+    public LiveData<Boolean> getIsLoadingTopRatedMovies() {
+        return isLoadingTopRatedMovies;
+    }
+
+    public LiveData<List<MovieItem>> getTopRatedMovies() {
+        return topRatedMovies;
+    }
+
+    public LiveData<Boolean> getIsLoadingUpcomingMovies() {
+        return isLoadingUpcomingMovies;
+    }
+
+    public LiveData<List<MovieItem>> getUpcomingMovies() {
+        return upComingMovies;
+    }
+
+    private void loadSliderItems() {
         List<SliderItems> sliderItems = new ArrayList<>();
         sliderItems.add(new SliderItems(R.drawable.wide1));
         sliderItems.add(new SliderItems(R.drawable.wide2));
         sliderItems.add(new SliderItems(R.drawable.wide3));
         sliderItemsLiveData.setValue(sliderItems);
-        return sliderItemsLiveData;
     }
 
-    public LiveData<ListFilm> getBestMovies() {
-        String url = BASE_URL + "movie/popular?api_key=" + API_KEY + "&language=en-US&page=1";
-        StringRequest request = new StringRequest(Request.Method.GET, url, response -> {
-            ListFilm items = new Gson().fromJson(response, ListFilm.class);
-            bestMoviesLiveData.setValue(items);
-        }, error -> {
-            // Log or handle error
+    private void loadBestMovies() {
+        isLoadingBestMovies.setValue(true);
+        movieRepository.getPopularMovies(new Callback<ListMovie>() {
+            @Override
+            public void onResponse(Call<ListMovie> call, Response<ListMovie> response) {
+                isLoadingBestMovies.setValue(false);
+                if (response.isSuccessful() && response.body() != null) {
+                    bestMovies.setValue(response.body().getResults());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ListMovie> call, Throwable t) {
+                isLoadingBestMovies.setValue(false);
+            }
         });
-        requestQueue.add(request);
-        return bestMoviesLiveData;
     }
 
+    private void loadTopRatedMovies() {
+        isLoadingTopRatedMovies.setValue(true);
+        movieRepository.getTopRatedMovies(new Callback<ListMovie>() {
+            @Override
+            public void onResponse(Call<ListMovie> call, Response<ListMovie> response) {
+                isLoadingTopRatedMovies.setValue(false);
+                if (response.isSuccessful() && response.body() != null) {
+                    topRatedMovies.setValue(response.body().getResults());
+                }
+            }
 
-    public LiveData<ListFilm> getUpcomingMovies() {
-        String url = BASE_URL + "movie/upcoming?api_key=" + API_KEY + "&language=en-US&page=1";
-        StringRequest request = new StringRequest(Request.Method.GET, url, response -> {
-            ListFilm items = new Gson().fromJson(response, ListFilm.class);
-            upcomingMoviesLiveData.setValue(items);
-        }, error -> {
-            // Log or handle error
+            @Override
+            public void onFailure(Call<ListMovie> call, Throwable t) {
+                isLoadingTopRatedMovies.setValue(false);
+            }
         });
-        requestQueue.add(request);
-        return upcomingMoviesLiveData;
     }
 
+    private void loadUpComingMovies() {
+        isLoadingUpcomingMovies.setValue(true);
+        movieRepository.getUpcomingMovies(new Callback<ListMovie>() {
+            @Override
+            public void onResponse(Call<ListMovie> call, Response<ListMovie> response) {
+                isLoadingUpcomingMovies.setValue(false);
+                if (response.isSuccessful() && response.body() != null) {
+                    upComingMovies.setValue(response.body().getResults());
+                }
+            }
 
-    public LiveData<List<GenresItem>> getCategories() {
-        StringRequest request = new StringRequest(Request.Method.GET, "https://moviesapi.ir/api/v1/genres", response -> {
-            ArrayList<GenresItem> items = new Gson().fromJson(response, new TypeToken<ArrayList<GenresItem>>(){}.getType());
-            categoryLiveData.setValue(items);
-        }, error -> {
-            // Log error
+            @Override
+            public void onFailure(Call<ListMovie> call, Throwable t) {
+                isLoadingUpcomingMovies.setValue(false);
+            }
         });
-        requestQueue.add(request);
-        return categoryLiveData;
-    }
-
-    public LiveData<ListFilm> searchMovies(String query) {
-        String url = BASE_URL + "search/movie?api_key=" + API_KEY + "&query=" + Uri.encode(query);
-        StringRequest request = new StringRequest(Request.Method.GET, url, response -> {
-            ListFilm items = new Gson().fromJson(response, ListFilm.class);
-            searchResultsLiveData.setValue(items);
-        }, error -> {
-            // Log or handle error
-        });
-        requestQueue.add(request);
-        return searchResultsLiveData;
     }
 }
+

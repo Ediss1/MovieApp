@@ -57,9 +57,8 @@ public class ProfileFragment extends Fragment {
         });
 
         btnSignOut.setOnClickListener(v -> {
-            FirebaseAuth.getInstance().signOut();
+            profileViewModel.signOut();
 
-            // Navigate back to LoginActivity
             Intent intent = new Intent(getActivity(), LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // clear backstack
             startActivity(intent);

@@ -34,4 +34,6 @@ firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 google-gms-google-services = { id = "com.google.gms.google-services", version.ref = "googleGmsGoogleServices" }
+androidx-navigation-safeargs = { id = "androidx.navigation.safeargs", version = "2.7.7" }
+
 

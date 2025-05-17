@@ -1,37 +1,28 @@
 package com.example.movieapp.ui.viewmodel;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.google.firebase.auth.FirebaseAuth;
+import com.example.movieapp.data.repository.FirebaseRepository;
 import com.google.firebase.auth.FirebaseUser;
 
 public class LoginViewModel extends ViewModel {
-    private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    private final MutableLiveData<FirebaseUser> userLiveData = new MutableLiveData<>();
-    private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
+
+    private final FirebaseRepository firebaseRepository = new FirebaseRepository();
 
     public LiveData<FirebaseUser> getUserLiveData() {
-        return userLiveData;
+        return firebaseRepository.getUserLiveData();
     }
 
     public LiveData<String> getErrorMessage() {
-        return errorMessage;
+        return firebaseRepository.getErrorMessage();
     }
 
     public void login(String email, String password) {
-        mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        userLiveData.setValue(mAuth.getCurrentUser());
-                    } else {
-                        errorMessage.setValue("Authentication failed");
-                    }
-                });
+        firebaseRepository.login(email, password);
     }
 
     public FirebaseUser getCurrentUser() {
-        return mAuth.getCurrentUser();
+        return firebaseRepository.getCurrentUser();
     }
 }

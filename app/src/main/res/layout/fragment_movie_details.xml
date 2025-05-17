@@ -57,10 +57,10 @@
 
                 <ImageView
                     android:id="@+id/backImg"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
                     android:background="@drawable/oval_btn_background"
-                    android:padding="8dp"
+                    android:padding="10dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -68,15 +68,14 @@
 
                 <ImageView
                     android:id="@+id/favImg"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="3dp"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
                     android:background="@drawable/oval_btn_background"
-                    android:padding="6dp"
+                    android:padding="10dp"
+                    android:src="@drawable/fav"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:src="@drawable/fav" />
+                    app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -129,14 +128,19 @@
                 app:layout_constraintStart_toStartOf="@+id/constraintLayout2" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/genreView"
+                android:id="@+id/genresRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:nestedScrollingEnabled="false"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="24dp"
+                android:orientation="horizontal"
+                android:overScrollMode="never"
+                app:layout_constraintEnd_toEndOf="@+id/constraintLayout2"
+                app:layout_constraintStart_toStartOf="@+id/constraintLayout2"
                 app:layout_constraintTop_toBottomOf="@+id/picDetail" />
+
+
 
             <TextView
                 android:id="@+id/textView15"
@@ -148,7 +152,7 @@
                 android:textColor="@color/yellow"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/genreView" />
+                app:layout_constraintTop_toBottomOf="@+id/genresRecyclerView" />
 
             <TextView
                 android:id="@+id/movieSummary"

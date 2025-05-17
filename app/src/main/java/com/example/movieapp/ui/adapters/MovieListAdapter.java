@@ -15,20 +15,22 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.movieapp.R;
-import com.example.movieapp.data.model.ListFilm;
+import com.example.movieapp.data.model.MovieItem;
+
+import java.util.List;
 
 
-public class FilmListAdapter extends RecyclerView.Adapter<FilmListAdapter.ViewHolder> {
+public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.ViewHolder> {
+
+    private final List<MovieItem> items;
+    private final OnMovieClickListener listener;
+    private Context context;
 
     public interface OnMovieClickListener {
         void onMovieClick(int movieId);
     }
 
-    private final ListFilm items;
-    private final OnMovieClickListener listener;
-    private Context context;
-
-    public FilmListAdapter(ListFilm items, OnMovieClickListener listener) {
+    public MovieListAdapter(List<MovieItem> items, OnMovieClickListener listener) {
         this.items = items;
         this.listener = listener;
     }
@@ -44,20 +46,18 @@ public class FilmListAdapter extends RecyclerView.Adapter<FilmListAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.titleText.setText(items.getResults().get(position).getTitle());
-
+        holder.titleText.setText(items.get(position).getTitle());
         Glide.with(context)
-                .load(items.getResults().get(position).getFullPosterUrl())
+                .load("https://image.tmdb.org/t/p/w500" + items.get(position).getPosterPath())
                 .apply(new RequestOptions().transform(new CenterCrop(), new RoundedCorners(30)))
                 .into(holder.pic);
+        holder.itemView.setOnClickListener(view -> listener.onMovieClick(items.get(position).getId()));
 
-        holder.itemView.setOnClickListener(view ->
-                listener.onMovieClick(items.getResults().get(position).getId()));
     }
 
     @Override
     public int getItemCount() {
-        return items.getResults().size();
+        return items.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -70,4 +70,7 @@ public class FilmListAdapter extends RecyclerView.Adapter<FilmListAdapter.ViewHo
             pic = itemView.findViewById(R.id.pic);
         }
     }
+
+
+
 }

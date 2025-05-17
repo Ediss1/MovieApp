@@ -1,6 +1,6 @@
 package com.example.movieapp.ui.adapters;
 
-import android.util.Log;
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +20,7 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.Favo
 
     private List<MovieItem> favoriteMovies;
     private OnItemClickListener listener;
+    private Context context;
 
     public interface OnItemClickListener {
         void onItemClick(int movieId);
@@ -33,34 +34,29 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.Favo
     @NonNull
     @Override
     public FavoriteViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        context = parent.getContext();
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_favorite, parent, false);
         return new FavoriteViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull FavoriteViewHolder holder, int position) {
-        MovieItem movie = favoriteMovies.get(position);
-
-        // Set movie poster
-        if (movie.getPosterPath() != null) {
-            Glide.with(holder.itemView.getContext())
-                    .load("https://image.tmdb.org/t/p/w500" + movie.getPosterPath())
-                    .placeholder(R.drawable.orange_button_background)
-                    .error(R.drawable.oval_btn_background)
-                    .into(holder.poster);
-        } else {
-            holder.poster.setImageResource(R.drawable.oval_btn_background);
-        }
+        holder.titleText.setText(favoriteMovies.get(position).getTitle());
+        Glide.with(holder.itemView.getContext())
+                .load("https://image.tmdb.org/t/p/w500" + favoriteMovies.get(position).getPosterPath())
+                .placeholder(R.drawable.button_background)
+                .error(R.drawable.oval_btn_background)
+                .into(holder.pic);
 
         // Set movie title
-        if (movie.getTitle() != null) {
-            holder.title.setText(movie.getTitle());
+        if (favoriteMovies.get(position).getTitle() != null) {
+            holder.titleText.setText(favoriteMovies.get(position).getTitle());
         } else {
-            holder.title.setText("No title available");
+            holder.titleText.setText("No title available");
         }
 
         // Set click listener
-        holder.itemView.setOnClickListener(v -> listener.onItemClick(movie.getId()));
+        holder.itemView.setOnClickListener(v -> listener.onItemClick(favoriteMovies.get(position).getId()));
     }
 
     @Override
@@ -68,24 +64,19 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.Favo
         return favoriteMovies.size();
     }
 
-    // Method to add movies to the list efficiently
-    public void addMovie(MovieItem movie) {
-        if (movie != null) {
-            favoriteMovies.add(movie);
-            notifyItemInserted(favoriteMovies.size() - 1);
-            Log.d("FavoritesAdapter", "Added movie: " + movie.getTitle());
-        }
-    }
-
-
     static class FavoriteViewHolder extends RecyclerView.ViewHolder {
-        ImageView poster;
-        TextView title;
+        TextView titleText;
+        ImageView pic;
 
         public FavoriteViewHolder(@NonNull View itemView) {
             super(itemView);
-            poster = itemView.findViewById(R.id.favoritePoster);
-            title = itemView.findViewById(R.id.textView2); // Ensure this matches the XML ID
+            titleText = itemView.findViewById(R.id.textView2); // Ensure this matches the XML ID
+            pic = itemView.findViewById(R.id.favoritePoster);
         }
+    }
+
+    public void setMovies(List<MovieItem> movies) {
+        this.favoriteMovies = movies;
+        notifyDataSetChanged();
     }
 }

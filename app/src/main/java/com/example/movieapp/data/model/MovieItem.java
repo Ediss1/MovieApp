@@ -45,6 +45,12 @@ public class MovieItem {
 
     private List<Genre> genres;
 
+    public MovieItem(String batmanBegins, String overview, String image) {
+    }
+
+    public MovieItem() {
+
+    }
     // Getters and Setters for all fields
 
 
